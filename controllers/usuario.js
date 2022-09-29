@@ -1,5 +1,6 @@
-const Usuario = require("../models/usuario");
-const bcrypt = require("bcryptjs") 
+const Usuario = require("../models/usuario")
+const bcrypt = require("bcryptjs"); 
+const { validationResult } = require("express-validator");
 
 //para usarr query =>  ?=
 //http://localhost:8080/api/usuarios?=hola&nombre=ivan&pkey=123
@@ -14,7 +15,9 @@ const userGet= async (req, res) => {
  }
 //const {response}=requiere('express')
 const userPost= async (req, res) => {
-   const {nombre, correo, contraseña, rol} = req.body;
+   const {nombre, correo, contraseña, rol} = req.body
+   const errors = validationResult(req)
+   if (!errors.isEmpty())  return res.status(400).json(errors);
    const usuario = new Usuario({nombre, correo, contraseña, rol});
    //verificar si el corro existe
    const correoExiste = await Usuario.findOne({correo})

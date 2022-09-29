@@ -29,4 +29,9 @@ const UsuarioSchema = Schema({
     }
 })
 
+UsuarioSchema.methods.toJSON = function () {
+    //aqui hay un error en el obj
+    const {contraseña, __v, ...varUsuarios} = this.to.Object()
+    return varUsuarios;
+}
 module.exports = model ('Usuario', UsuarioSchema)
