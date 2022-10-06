@@ -5,12 +5,19 @@ const { validationResult } = require("express-validator");
 //para usarr query =>  ?=
 //http://localhost:8080/api/usuarios?=hola&nombre=ivan&pkey=123
 const userGet = async (req, res) => {
-   const query = req.query
-   const usuarios = await Usuario.find({});
+   const {limite=1,rango} = req.query
+   const promesa= await Promise.all([
+      Usuario.find({estado:true})
+      .limit(Number(limite))
+      .skip(Number(rango)),
+   
+      Usuario.countDocuments(/*{estado:true}*/)
+   ])
+
 
    res.json({
       "msj": "get",
-      usuarios
+      promesa
    })
 }
 //const {response}=requiere('express')
@@ -62,7 +69,8 @@ const userPut = async (req, res) => {
 }
 
 
-const userDel = (req, res) => {
+const userDel = async(req, res) => {
+   const usuario= await Usuario.findOneAndDelete();
    res.json({
       "msj": "Delete"
    })
